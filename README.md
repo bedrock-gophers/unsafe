@@ -10,7 +10,7 @@ _Note: This library is called unsafe for a reason; it uses the Go `unsafe` libra
 You may import Unsafe Utils via the Go CLI
 
 ```
-go get github.com/bedrock-gophers/living
+go get github.com/bedrock-gophers/unsafe
 ```
 
 ## Examples
