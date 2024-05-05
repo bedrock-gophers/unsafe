@@ -1,4 +1,4 @@
-module github.com/bedrock-gophers/unsafe-utils
+module github.com/bedrock-gophers/unsafe
 
 go 1.21.1
 
