@@ -1,7 +1,7 @@
 package main
 
 import (
-	unsafeutils "github.com/bedrock-gophers/unsafe-utils/unsafe-utils"
+	"github.com/bedrock-gophers/unsafe/unsafe"
 	"github.com/df-mc/dragonfly/server"
 	"github.com/df-mc/dragonfly/server/player"
 	"github.com/df-mc/dragonfly/server/player/chat"
@@ -30,5 +30,5 @@ func main() {
 }
 
 func accept(p *player.Player) {
-	unsafeutils.Rotate(p, 90, 90)
+	unsafe.Rotate(p, 90, 90)
 }

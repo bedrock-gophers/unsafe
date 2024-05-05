@@ -1,4 +1,4 @@
-package unsafeutils
+package unsafe
 
 import (
 	_ "unsafe"
