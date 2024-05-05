@@ -15,7 +15,7 @@ go get github.com/bedrock-gophers/living
 
 ## Examples
 
-You may write a network packet directly to a player via the use of `unsafeutils.WritePacket`
+You may write a network packet directly to a player via the use of `unsafe.WritePacket`
 
 ```go
 unsafe.WritePacket(p, packet.SetActorData{
