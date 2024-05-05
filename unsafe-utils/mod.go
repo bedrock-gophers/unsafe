@@ -37,3 +37,8 @@ func Rotate(p *player.Player, yaw, pitch float64) {
 		v.ViewEntityMovement(p, p.Position(), cube.Rotation{yaw, pitch}, p.OnGround())
 	}
 }
+
+// UpdateHeldSlot updates the held slot of the player.
+func UpdateHeldSlot(p *player.Player, slot int) {
+	updatePrivateField(p, "heldSlot", slot)
+}
