@@ -41,4 +41,8 @@ func Rotate(p *player.Player, yaw, pitch float64) {
 // UpdateHeldSlot updates the held slot of the player.
 func UpdateHeldSlot(p *player.Player, slot int) {
 	updatePrivateField(p, "heldSlot", slot)
+	
+	for _, v := range p.World().Viewers(p.Position()) {
+		v.ViewEntityItems(p)
+	}
 }
