@@ -33,7 +33,7 @@ func Rotate(p *player.Player, yaw, pitch float64) {
 	updatePrivateField(p, "yaw", *atomic.NewFloat64(yaw))
 	updatePrivateField(p, "pitch", *atomic.NewFloat64(pitch))
 
-	for _, v := range p.World().Viewers(p.Position()) {
+	for _, v := range p.Tx().Viewers(p.Position()) {
 		v.ViewEntityMovement(p, p.Position(), cube.Rotation{yaw, pitch}, p.OnGround())
 	}
 }
@@ -41,8 +41,8 @@ func Rotate(p *player.Player, yaw, pitch float64) {
 // UpdateHeldSlot updates the held slot of the player.
 func UpdateHeldSlot(p *player.Player, slot int) {
 	updatePrivateField(p, "heldSlot", slot)
-	
-	for _, v := range p.World().Viewers(p.Position()) {
+
+	for _, v := range p.Tx().Viewers(p.Position()) {
 		v.ViewEntityItems(p)
 	}
 }
