@@ -15,6 +15,12 @@ func Session(p *player.Player) *session.Session {
 	return player_session(p)
 }
 
+// Conn returns the underlying network connection of the given player.
+func Conn(p *player.Player) session.Conn {
+	s := player_session(p)
+	return fetchPrivateField[session.Conn](s, "conn")
+}
+
 // WritePacket writes the given packet to a network session or a player.
 func WritePacket[T *player.Player | *session.Session](target T, pk packet.Packet) {
 	s, ok := any(target).(*session.Session)
