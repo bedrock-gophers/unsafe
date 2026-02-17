@@ -3,25 +3,23 @@ package unsafe
 import (
 	_ "unsafe"
 
-	"github.com/df-mc/atomic"
 	"github.com/df-mc/dragonfly/server/block/cube"
+	"github.com/df-mc/dragonfly/server/entity"
 	"github.com/df-mc/dragonfly/server/player"
 	"github.com/df-mc/dragonfly/server/session"
+	"github.com/df-mc/dragonfly/server/world"
 	"github.com/sandertv/gophertunnel/minecraft/protocol/packet"
 )
 
-// Session returns the underlying network session of the given player.
 func Session(p *player.Player) *session.Session {
 	return player_session(p)
 }
 
-// Conn returns the underlying network connection of the given player.
 func Conn(p *player.Player) session.Conn {
 	s := player_session(p)
 	return fetchPrivateField[session.Conn](s, "conn")
 }
 
-// WritePacket writes the given packet to a network session or a player.
 func WritePacket[T *player.Player | *session.Session](target T, pk packet.Packet) {
 	s, ok := any(target).(*session.Session)
 	if !ok {
@@ -34,18 +32,47 @@ func WritePacket[T *player.Player | *session.Session](target T, pk packet.Packet
 	session_writePacket(s, pk)
 }
 
-// Rotate rotates the player with the given yaw and pitch.
-func Rotate(p *player.Player, yaw, pitch float64) {
-	updatePrivateField(p, "yaw", *atomic.NewFloat64(yaw))
-	updatePrivateField(p, "pitch", *atomic.NewFloat64(pitch))
+func playerEntityData(p *player.Player) *world.EntityData {
+	return fetchPrivateField[*world.EntityData](p, "data")
+}
+
+func SetPlayerMovementGravity(p *player.Player, gravity float64) {
+	if p == nil {
+		return
+	}
+	mc := fetchPrivateField[*entity.MovementComputer](p, "mc")
+	if mc == nil {
+		return
+	}
+	mc.Gravity = gravity
+}
+
+func AddPlayerRotation(p *player.Player, dyaw, dpitch float64) cube.Rotation {
+	if p == nil {
+		return cube.Rotation{}
+	}
+	data := playerEntityData(p)
+	rot := data.Rot.Add(cube.Rotation{dyaw, dpitch})
+	data.Rot = rot
+	return rot
+}
+
+func SetPlayerRotation(p *player.Player, yaw, pitch float64) {
+	if p == nil {
+		return
+	}
+	data := playerEntityData(p)
+	data.Rot = cube.Rotation{yaw, pitch}
 
 	for _, v := range p.Tx().Viewers(p.Position()) {
 		v.ViewEntityMovement(p, p.Position(), cube.Rotation{yaw, pitch}, p.OnGround())
 	}
 }
 
-// UpdateHeldSlot updates the held slot of the player.
-func UpdateHeldSlot(p *player.Player, slot int) {
+func SetHeldSlot(p *player.Player, slot int) {
+	if p == nil {
+		return
+	}
 	updatePrivateField(p, "heldSlot", slot)
 
 	for _, v := range p.Tx().Viewers(p.Position()) {
